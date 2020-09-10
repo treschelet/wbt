@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+
+  postgres:
+    image: postgres:12.3-alpine
+#    ports:
+#      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+
+  nginx:
+    build: ./nginx
+    depends_on:
+      - app
+    ports:
+      - 80:80
+    volumes:
+      - ./app:/var/www/html
+    environment:
+      - FASTCGI_HOST=app
+
+  app:
+    build: ./php
+    volumes:
+      - ./app:/var/www/html
